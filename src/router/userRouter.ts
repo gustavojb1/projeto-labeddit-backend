@@ -4,12 +4,16 @@ import { UserBusiness } from "../business/UserBusiness";
 import { UserDatabase } from "../database/UserDatabase";
 import { UserDTO } from "../dtos/UserDTO";
 import { TokenManager } from "../services/TokenManager";
+import { IdGenerator } from "../services/IdGenerator";
+import { HashManager } from "../services/HashManager";
 
 const userController = new UserController(
   new UserBusiness(
     new UserDatabase(),
     new UserDTO(),
-    new TokenManager()
+    new TokenManager(),
+    new IdGenerator(),
+    new HashManager()
   ), 
   new UserDTO()
 );
@@ -17,3 +21,4 @@ const userController = new UserController(
 export const userRouter = express.Router();
 
 userRouter.get("/", userController.getUsers);
+userRouter.post("/signup", userController.createUser);

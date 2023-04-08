@@ -9,7 +9,7 @@ export class UserController {
     private userDTO : UserDTO
   ){}
 
-
+//GET ALL USERS
   public getUsers = async(req: Request, res: Response) => {
     try {
         const token = req.headers.authorization;
@@ -27,5 +27,25 @@ export class UserController {
             res.status(500).send("Erro inesperado")
         }
     }
+}
+
+//SIGNUP - CREATE USER
+public createUser = async(req: Request, res: Response) => {
+  try {
+      const { username , email , password , receiveEmails } = req.body;
+
+      const input = this.userDTO.createUserInput(username, email, password, receiveEmails);
+      const output = await this.userBusiness.createUser(input);
+
+      res.status(201).send(output);
+  } catch (error) {
+      console.log(error)
+
+      if (error instanceof BaseError) {
+          res.status(error.statusCode).send(error.message)
+      } else {
+          res.status(500).send("Erro inesperado")
+      }
+  }
 }
 }
