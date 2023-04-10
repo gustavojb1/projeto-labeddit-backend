@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { UserBusiness } from "../business/UserBusiness";
 import { UserDTO } from "../dtos/UserDTO";
 import { BaseError } from "../errors/BaseError";
+import { TokenManager } from "../services/TokenManager";
 
 export class UserController {
     constructor(
@@ -88,5 +89,21 @@ export class UserController {
                 res.status(500).send("Erro inesperado")
             } 
         }
+    }
+
+    //VERIFY TOKEN
+    public verifyToken = (req: Request, res: Response) => {
+        const token = req.params.token;
+        let isTokenValid : boolean;
+
+        const tokenManager = new TokenManager();
+        const payload = tokenManager.getPayload(token);
+        if (payload === null){
+            isTokenValid = false;
+        } else {
+            isTokenValid = true;
+        }
+        
+        res.status(200).send({ isTokenValid });
     }
 }
