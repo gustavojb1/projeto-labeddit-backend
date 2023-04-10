@@ -3,7 +3,7 @@ import { BadRequestError } from "../errors/BadRequestError";
 import { User } from "../models/User";
 
 
-
+//INTERFACES
 
 export interface GetUserInputDTO {
   token: string
@@ -26,6 +26,19 @@ export interface CreateUserOutputDTO {
   token: string
   userId: string
 }
+
+export interface LoginUserInputDTO {
+  email: string
+  password: string
+}
+
+export interface LoginUserOutputDTO {
+  token: string
+  userId: string
+}
+
+
+//CLASS
 
 export class UserDTO {
   getUserInput(token: unknown) {
@@ -66,7 +79,7 @@ export class UserDTO {
     if (typeof password !== "string") {
       throw new BadRequestError("'password' precisa ser uma string");
     }
-    
+
     if (typeof receiveEmails !== "boolean") {
       throw new BadRequestError("'receiveEmails' precisa ser um boolean");
     }
@@ -81,10 +94,27 @@ export class UserDTO {
     return result;
   }
 
-  createUserOutput(token : string, userId: string) : CreateUserOutputDTO {
-    const result : CreateUserOutputDTO = {
-        token,
-        userId
+  createUserOutput(token: string, userId: string): CreateUserOutputDTO {
+    const result: CreateUserOutputDTO = {
+      token,
+      userId
+    }
+
+    return result;
+  }
+
+  loginUserInput(email: unknown, password: unknown) : LoginUserInputDTO {
+    if (typeof email !== "string"){
+        throw new BadRequestError("'email' deve ser string");
+    }
+
+    if (typeof password !== "string"){
+        throw new BadRequestError("'password' deve ser string");
+    }
+
+    const result : LoginUserInputDTO = {
+        email,
+        password
     }
 
     return result;
