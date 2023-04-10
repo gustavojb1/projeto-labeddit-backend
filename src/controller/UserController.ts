@@ -71,7 +71,7 @@ export class UserController {
     }
 
     //DELETE USER
-    public deleteUserById = async(req: Request, res: Response) => {
+    public deleteUserById = async (req: Request, res: Response) => {
         try {
             const id = req.params.id;
             const token = req.headers.authorization;
@@ -87,23 +87,44 @@ export class UserController {
                 res.status(error.statusCode).send(error.message)
             } else {
                 res.status(500).send("Erro inesperado")
-            } 
+            }
         }
     }
 
     //VERIFY TOKEN
     public verifyToken = (req: Request, res: Response) => {
         const token = req.params.token;
-        let isTokenValid : boolean;
+        let isTokenValid: boolean;
 
         const tokenManager = new TokenManager();
         const payload = tokenManager.getPayload(token);
-        if (payload === null){
+        if (payload === null) {
             isTokenValid = false;
         } else {
             isTokenValid = true;
         }
-        
+
         res.status(200).send({ isTokenValid });
+    }
+
+    //GET USER BY ID
+    public getUserById = async(req: Request, res: Response) => {
+        try {
+            const id = req.params.id;
+            const token = req.headers.authorization;
+
+            const input = this.userDTO.getUserInputById(token, id);
+            const output = await this.userBusiness.getUserById(input);
+
+            res.status(200).send(output);
+        } catch (error) {
+            console.log(error)
+
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.status(500).send("Erro inesperado")
+            }
+        }
     }
 }

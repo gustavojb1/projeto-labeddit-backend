@@ -1,6 +1,5 @@
 import { UserDatabase } from "../database/UserDatabase";
-// import { CreateUserInputDTO, CreateUserOutputDTO, DeleteUserInputDTO, GetUserByIdInputDTO, GetUserInputDTO, GetUserOutputDTO, LoginUserInputDTO, LoginUserOutputDTO, UserDTO } from "../dtos/UserDTO";
-import { CreateUserInputDTO, CreateUserOutputDTO, DeleteUserInputDTO, GetUserInputDTO, GetUserOutputDTO, LoginUserInputDTO, LoginUserOutputDTO, UserDTO } from "../dtos/UserDTO";
+import { CreateUserInputDTO, CreateUserOutputDTO, DeleteUserInputDTO, GetUserByIdInputDTO, GetUserInputDTO, GetUserOutputDTO, LoginUserInputDTO, LoginUserOutputDTO, UserDTO } from "../dtos/UserDTO";
 import { TokenPayload, USER_ROLES } from "../types";
 import { TokenManager } from "../services/TokenManager";
 import { BadRequestError } from "../errors/BadRequestError";
@@ -156,6 +155,35 @@ export class UserBusiness {
     await this.userDatabase.deleteUserById(idToDelete);
 
     const output = "User deletado com sucesso";
+
+    return output;
+  }
+
+  //GET USER BY ID
+  public async getUserById(input: GetUserByIdInputDTO): Promise<GetUserOutputDTO> {
+    const { token, id } = input;
+
+    const payload = this.tokenManager.getPayload(token);
+    if (payload === null) {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const userDB = await this.userDatabase.findUserById(id);
+    if (!userDB) {
+      throw new NotFoundError("Não foi encontrado um user com esse 'id'");
+    }
+
+    const user = new User(
+      userDB.id,
+      userDB.username,
+      userDB.email,
+      userDB.password,
+      userDB.receive_emails,
+      userDB.role,
+      userDB.created_at
+    );
+
+    const output = this.userDTO.getUserOutput(user);
 
     return output;
   }

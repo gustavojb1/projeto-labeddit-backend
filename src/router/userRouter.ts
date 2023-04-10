@@ -25,3 +25,4 @@ userRouter.post("/signup", userController.createUser);
 userRouter.post("/login", userController.loginUser);
 userRouter.delete("/:id", userController.deleteUserById);
 userRouter.get("/verify-token/:token", userController.verifyToken);
+userRouter.get("/:id", userController.getUserById);

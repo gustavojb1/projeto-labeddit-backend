@@ -42,6 +42,11 @@ export interface DeleteUserInputDTO {
   id: string
 }
 
+export interface GetUserByIdInputDTO {
+  id: string
+  token: string
+}
+
 
 //CLASS
 
@@ -125,16 +130,29 @@ export class UserDTO {
     return result;
   }
 
-  deleteUserInput(token: unknown, id: string){
-    if (typeof token !== "string"){
-        throw new BadRequestError("Token inválido");
+  deleteUserInput(token: unknown, id: string) {
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
     }
 
-    const result : DeleteUserInputDTO = {
-        token,
-        id
+    const result: DeleteUserInputDTO = {
+      token,
+      id
     }
 
     return result;
-}
+  }
+
+  getUserInputById(token: unknown, id: string) {
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: GetUserByIdInputDTO = {
+      id,
+      token
+    }
+
+    return result;
+  }
 }
