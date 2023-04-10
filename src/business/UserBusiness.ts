@@ -1,6 +1,6 @@
 import { UserDatabase } from "../database/UserDatabase";
 // import { CreateUserInputDTO, CreateUserOutputDTO, DeleteUserInputDTO, GetUserByIdInputDTO, GetUserInputDTO, GetUserOutputDTO, LoginUserInputDTO, LoginUserOutputDTO, UserDTO } from "../dtos/UserDTO";
-import { CreateUserInputDTO, CreateUserOutputDTO, GetUserInputDTO, GetUserOutputDTO, LoginUserInputDTO, LoginUserOutputDTO, UserDTO } from "../dtos/UserDTO";
+import { CreateUserInputDTO, CreateUserOutputDTO, DeleteUserInputDTO, GetUserInputDTO, GetUserOutputDTO, LoginUserInputDTO, LoginUserOutputDTO, UserDTO } from "../dtos/UserDTO";
 import { TokenPayload, USER_ROLES } from "../types";
 import { TokenManager } from "../services/TokenManager";
 import { BadRequestError } from "../errors/BadRequestError";
@@ -8,6 +8,7 @@ import { User } from "../models/User";
 import { IdGenerator } from "../services/IdGenerator";
 import { HashManager } from "../services/HashManager";
 import { NotFoundError } from "../errors/NotFoundError";
+import { ForbidenError } from "../errors/ForbiddenError";
 
 
 
@@ -30,7 +31,6 @@ export class UserBusiness {
     if (payload === null) {
       throw new BadRequestError("Token inválido");
     }
-    console.log(payload)
     if (payload.role !== "ADMIN") {
       throw new BadRequestError("Usuário sem permissão");
     }
@@ -92,7 +92,6 @@ export class UserBusiness {
   }
 
   //LOGIN USER
-
   public async loginUser(input: LoginUserInputDTO): Promise<LoginUserOutputDTO> {
     const { email, password } = input;
 
@@ -131,6 +130,32 @@ export class UserBusiness {
       token,
       userId
     }
+
+    return output;
+  }
+
+  //DELETE USER
+  public async deleteUserById(input: DeleteUserInputDTO): Promise<string> {
+    const { token } = input;
+    const idToDelete = input.id;
+
+    const payload = this.tokenManager.getPayload(token);
+    if (payload === null) {
+      throw new BadRequestError("Token inválido");
+    }
+
+    if (payload.role !== USER_ROLES.ADMIN) {
+      throw new ForbidenError("Apenas administradores podem deletar usuários");
+    }
+
+    const userDB = await this.userDatabase.findUserById(idToDelete);
+    if (!userDB) {
+      throw new NotFoundError("Usuário não encontrado");
+    }
+
+    await this.userDatabase.deleteUserById(idToDelete);
+
+    const output = "User deletado com sucesso";
 
     return output;
   }

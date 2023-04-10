@@ -37,6 +37,11 @@ export interface LoginUserOutputDTO {
   userId: string
 }
 
+export interface DeleteUserInputDTO {
+  token: string
+  id: string
+}
+
 
 //CLASS
 
@@ -103,18 +108,31 @@ export class UserDTO {
     return result;
   }
 
-  loginUserInput(email: unknown, password: unknown) : LoginUserInputDTO {
-    if (typeof email !== "string"){
-        throw new BadRequestError("'email' deve ser string");
+  loginUserInput(email: unknown, password: unknown): LoginUserInputDTO {
+    if (typeof email !== "string") {
+      throw new BadRequestError("'email' deve ser string");
     }
 
-    if (typeof password !== "string"){
-        throw new BadRequestError("'password' deve ser string");
+    if (typeof password !== "string") {
+      throw new BadRequestError("'password' deve ser string");
     }
 
-    const result : LoginUserInputDTO = {
-        email,
-        password
+    const result: LoginUserInputDTO = {
+      email,
+      password
+    }
+
+    return result;
+  }
+
+  deleteUserInput(token: unknown, id: string){
+    if (typeof token !== "string"){
+        throw new BadRequestError("Token inválido");
+    }
+
+    const result : DeleteUserInputDTO = {
+        token,
+        id
     }
 
     return result;

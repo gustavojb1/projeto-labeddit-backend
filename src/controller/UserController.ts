@@ -50,9 +50,9 @@ export class UserController {
     }
 
     //LOGIN USER
-    public loginUser = async(req: Request, res: Response) => {
+    public loginUser = async (req: Request, res: Response) => {
         try {
-            const { email , password } = req.body;
+            const { email, password } = req.body;
 
             const input = this.userDTO.loginUserInput(email, password);
             const output = await this.userBusiness.loginUser(input);
@@ -66,6 +66,27 @@ export class UserController {
             } else {
                 res.status(500).send("Erro inesperado")
             }
+        }
+    }
+
+    //DELETE USER
+    public deleteUserById = async(req: Request, res: Response) => {
+        try {
+            const id = req.params.id;
+            const token = req.headers.authorization;
+
+            const input = this.userDTO.deleteUserInput(token, id);
+            const output = await this.userBusiness.deleteUserById(input);
+
+            res.status(200).send("Usuário deletado com sucesso");
+        } catch (error) {
+            console.log(error)
+
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.status(500).send("Erro inesperado")
+            } 
         }
     }
 }
