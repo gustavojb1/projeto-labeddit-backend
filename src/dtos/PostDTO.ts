@@ -57,6 +57,12 @@ export interface EditPostVoteInputDTO {
   token: string
 }
 
+export interface EditPostInputDTO {
+  id : string
+  content : string
+  token: string
+}
+
 
 // CLASSES
 export class PostDTO {
@@ -150,6 +156,25 @@ export class PostDTO {
     const result: EditPostVoteInputDTO = {
       id,
       vote,
+      token
+    }
+
+    return result;
+  }
+
+  editPostInput = (id: string, content: unknown, token: unknown): EditPostInputDTO => {
+    // id é string pois path param
+
+    if (typeof content !== "string") {
+      throw new BadRequestError("'content' deve ser uma string");
+    }
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: EditPostInputDTO = {
+      id,
+      content,
       token
     }
 

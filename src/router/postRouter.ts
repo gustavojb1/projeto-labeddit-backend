@@ -28,5 +28,6 @@ postRouter.get("/", postController.getPosts);
 postRouter.get("/votes", postController.getPostVotes);
 postRouter.get("/:id", postController.getPostById);
 postRouter.post("/", postController.createPost);
+postRouter.put("/:id", postController.updatePostById);
 postRouter.put("/:id/vote", postController.updatePostVoteById);
 

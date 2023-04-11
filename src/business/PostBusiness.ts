@@ -1,15 +1,16 @@
-import { CreatePostInputDTO, EditPostVoteInputDTO, GetPostByIdInputDTO, GetPostInputDTO, GetPostOutputDTO, GetPostVoteInputDTO, PostDTO } from "../dtos/PostDTO";
+import { CreatePostInputDTO, EditPostInputDTO, EditPostVoteInputDTO, GetPostByIdInputDTO, GetPostInputDTO, GetPostOutputDTO, GetPostVoteInputDTO, PostDTO } from "../dtos/PostDTO";
 import { BadRequestError } from "../errors/BadRequestError";
 import { TokenManager } from "../services/TokenManager";
 import { PostDatabase } from "../database/PostDatabase";
 import { UserDatabase } from "../database/UserDatabase";
-import { CommentDB, PostVoteDB, UserDB } from "../types";
+import { CommentDB, PostVoteDB, USER_ROLES, UserDB } from "../types";
 import { CommentDatabase } from "../database/CommentDatabase";
 import { Post } from "../models/Post";
 import { IdGenerator } from "../services/IdGenerator";
 import { NotFoundError } from "../errors/NotFoundError";
 import { PostVotesDatabase } from "../database/PostVotesDatabase";
 import { PostVote } from "../models/PostVote";
+import { ForbidenError } from "../errors/ForbiddenError";
 
 
 
@@ -280,6 +281,47 @@ export class PostBusiness {
     await this.postDatabase.updatePostById(updatedPostDB, postId);
 
     const output = "Vote atualizado com sucesso";
+    return output;
+  }
+
+  public async updatePostById(input: EditPostInputDTO): Promise<string> {
+    const { content, id, token } = input;
+
+    const payload = this.tokenManager.getPayload(token);
+    if (payload === null) {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const postDB = await this.postDatabase.findPostById(id);
+    if (!postDB) {
+      throw new NotFoundError("Não foi encontrado um post com esse id");
+    }
+
+    if (payload.role !== USER_ROLES.ADMIN) {
+      throw new ForbidenError("Somente administradores podem editar posts");
+    }
+
+    const updatedAt = (new Date()).toISOString();
+
+    const updatedPost = new Post(
+      id,
+      content,
+      postDB.upvotes,
+      postDB.downvotes,
+      postDB.created_at,
+      updatedAt,
+      {
+        id: postDB.creator_id,
+        username: ""
+      },
+      []
+    )
+
+    const updatedPostDB = updatedPost.toDBModel();
+    await this.postDatabase.updatePostById(updatedPostDB, id);
+
+    const output = "Post atualizado com sucesso";
+
     return output;
   }
 }
