@@ -6,6 +6,7 @@ import { UserDatabase } from "../database/UserDatabase";
 import { CommentDatabase } from "../database/CommentDatabase";
 import { PostDTO } from "../dtos/PostDTO";
 import { TokenManager } from "../services/TokenManager";
+import { IdGenerator } from "../services/IdGenerator";
 
 const postController = new PostController(
   new PostBusiness(
@@ -13,7 +14,8 @@ const postController = new PostController(
     new UserDatabase(),
     new CommentDatabase(),
     new PostDTO(),
-    new TokenManager()
+    new TokenManager(),
+    new IdGenerator()
   ),
   new PostDTO()
 );
@@ -21,3 +23,4 @@ const postController = new PostController(
 export const postRouter = express.Router();
 
 postRouter.get("/", postController.getPosts);
+postRouter.post("/", postController.createPost);

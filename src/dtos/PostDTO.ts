@@ -30,32 +30,54 @@ export interface GetPostOutputDTO {
   }[]
 }
 
+export interface CreatePostInputDTO {
+  content: string
+  token: string
+}
+
 //
 export class PostDTO {
-  getPostInput = (token: unknown) : GetPostInputDTO => {
-    if (typeof token !== "string"){
-        throw new BadRequestError ("Token inválido");
+  getPostInput = (token: unknown): GetPostInputDTO => {
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
     }
 
-    const result : GetPostInputDTO = {
-        token
+    const result: GetPostInputDTO = {
+      token
     }
 
     return result;
-}
+  }
 
-getPostOutput = (post: Post) : GetPostOutputDTO => {
-    const result : GetPostOutputDTO = {
-        id: post.getId(),
-        content: post.getContent(),
-        upvotes: post.getUpvotes(),
-        downvotes: post.getDownvotes(),
-        createdAt: post.getCreatedAt(),
-        updatedAt: post.getCreatedAt(),
-        creator: post.getCreator(),
-        comments: post.getComments()
+  getPostOutput = (post: Post): GetPostOutputDTO => {
+    const result: GetPostOutputDTO = {
+      id: post.getId(),
+      content: post.getContent(),
+      upvotes: post.getUpvotes(),
+      downvotes: post.getDownvotes(),
+      createdAt: post.getCreatedAt(),
+      updatedAt: post.getCreatedAt(),
+      creator: post.getCreator(),
+      comments: post.getComments()
     }
-    
+
     return result;
-}
+  }
+
+  createPostInput = (content: unknown, token: unknown): CreatePostInputDTO => {
+    if (typeof content !== "string") {
+      throw new BadRequestError("'content' deve ser uma string");
+    }
+
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: CreatePostInputDTO = {
+      content,
+      token
+    }
+
+    return result;
+  }
 }

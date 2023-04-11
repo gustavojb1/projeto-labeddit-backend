@@ -9,4 +9,10 @@ export class PostDatabase extends BaseDatabase {
       .connection(PostDatabase.TABLE_POSTS);
     return result;
   }
+
+  public async createPost(newPostDB: PostDB) {
+    await BaseDatabase
+      .connection(PostDatabase.TABLE_POSTS)
+      .insert(newPostDB);
+  }
 }
