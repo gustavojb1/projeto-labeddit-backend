@@ -1,4 +1,4 @@
-import { CreatePostInputDTO, EditPostInputDTO, EditPostVoteInputDTO, GetPostByIdInputDTO, GetPostInputDTO, GetPostOutputDTO, GetPostVoteInputDTO, PostDTO } from "../dtos/PostDTO";
+import { CreatePostInputDTO, DeletePostInputDTO, EditPostInputDTO, EditPostVoteInputDTO, GetPostByIdInputDTO, GetPostInputDTO, GetPostOutputDTO, GetPostVoteInputDTO, PostDTO } from "../dtos/PostDTO";
 import { BadRequestError } from "../errors/BadRequestError";
 import { TokenManager } from "../services/TokenManager";
 import { PostDatabase } from "../database/PostDatabase";
@@ -324,4 +324,28 @@ export class PostBusiness {
 
     return output;
   }
+
+  public async deletePostById(input: DeletePostInputDTO): Promise<string> {
+    const { id, token } = input;
+
+    const payload = this.tokenManager.getPayload(token);
+    if (payload === null) {
+        throw new BadRequestError("Token inválido");
+    }
+
+    const postDB = await this.postDatabase.findPostById(id);
+    if (!postDB) {
+        throw new NotFoundError("Não existe um post com esse 'id'");
+    }
+
+    if (payload.role !== USER_ROLES.ADMIN) {
+        throw new ForbidenError("Você não tem permissão para realizar essa ação");
+    }
+
+    await this.postDatabase.deletePostById(id);
+
+    const output = "Post deletado com sucesso";
+
+    return output;
+}
 }

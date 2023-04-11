@@ -116,16 +116,37 @@ export class PostController {
   }
 
   // UPDATE POST BY ID
-  public updatePostById = async(req: Request, res: Response) => {
+  public updatePostById = async (req: Request, res: Response) => {
+    try {
+      const id = req.params.id;
+      const content = req.body.content;
+      const token = req.headers.authorization;
+
+      const input = this.postDTO.editPostInput(id, content, token);
+      await this.postBusiness.updatePostById(input);
+
+      res.status(200).send("Post atualizado com sucesso");
+    } catch (error) {
+      console.log(error)
+
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message)
+      } else {
+        res.status(500).send("Erro inesperado")
+      }
+    }
+  }
+
+  //DELETE POST BY ID
+  public deletePostById = async(req: Request, res: Response) => {
     try {
         const id = req.params.id;
-        const content = req.body.content;
         const token = req.headers.authorization;
 
-        const input = this.postDTO.editPostInput(id, content, token);
-        await this.postBusiness.updatePostById(input);
+        const input = this.postDTO.deletePostInput(id, token);
+        await this.postBusiness.deletePostById(input);
 
-        res.status(200).send("Post atualizado com sucesso");
+        res.status(200).send("Post deletado com sucesso");
     } catch (error) {
         console.log(error)
 

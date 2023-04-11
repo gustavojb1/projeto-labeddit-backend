@@ -23,10 +23,17 @@ export class PostDatabase extends BaseDatabase {
     return result;
   }
 
-  public async updatePostById(updatedPostDB : PostDB, id : string){
+  public async updatePostById(updatedPostDB: PostDB, id: string) {
     await BaseDatabase
-        .connection(PostDatabase.TABLE_POSTS)
-        .update(updatedPostDB)
-        .where({ id })
-}
+      .connection(PostDatabase.TABLE_POSTS)
+      .update(updatedPostDB)
+      .where({ id })
+  }
+
+  public async deletePostById(id: string) {
+    await BaseDatabase
+      .connection(PostDatabase.TABLE_POSTS)
+      .del()
+      .where({ id });
+  }
 }

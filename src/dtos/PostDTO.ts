@@ -58,8 +58,13 @@ export interface EditPostVoteInputDTO {
 }
 
 export interface EditPostInputDTO {
-  id : string
-  content : string
+  id: string
+  content: string
+  token: string
+}
+
+export interface DeletePostInputDTO {
+  id: string
   token: string
 }
 
@@ -175,6 +180,19 @@ export class PostDTO {
     const result: EditPostInputDTO = {
       id,
       content,
+      token
+    }
+
+    return result;
+  }
+
+  deletePostInput = (id: string, token: unknown): DeletePostInputDTO => {
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: DeletePostInputDTO = {
+      id,
       token
     }
 
