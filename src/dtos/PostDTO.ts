@@ -35,7 +35,12 @@ export interface CreatePostInputDTO {
   token: string
 }
 
-//
+export interface GetPostByIdInputDTO {
+  id: string
+  token: string
+}
+
+// CLASSES
 export class PostDTO {
   getPostInput = (token: unknown): GetPostInputDTO => {
     if (typeof token !== "string") {
@@ -75,6 +80,19 @@ export class PostDTO {
 
     const result: CreatePostInputDTO = {
       content,
+      token
+    }
+
+    return result;
+  }
+
+  getPostByIdInput = (token: unknown, id: string): GetPostByIdInputDTO => {
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: GetPostByIdInputDTO = {
+      id,
       token
     }
 
