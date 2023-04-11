@@ -50,10 +50,8 @@ CREATE TABLE comment_votes (
     FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 );
 
-UPDATE users
-SET role = "ADMIN"
-WHERE email = "gustavo@email.com";
-
-DELETE FROM users;
-
 SELECT * from users;
+
+select * from posts;
+
+select * from post_votes;

@@ -1,0 +1,14 @@
+[34m0c15eab[31m (HEAD -> ammalB-gustavo-barbosa) [37mget post by id route — [36mGustavo Junqueira Barbosa, [32m2 hours ago
+[34mfcc14d6[31m [37mcreate post route — [36mGustavo Junqueira Barbosa, [32m2 hours ago
+[34mc83307c[31m [37mget all posts route and find comments(database) — [36mGustavo Junqueira Barbosa, [32m2 hours ago
+[34m27f5e5e[31m [37mpost structure and index route — [36mGustavo Junqueira Barbosa, [32m3 hours ago
+[34m2932365[31m (origin/ammalB-gustavo-barbosa) [37mget user by id route — [36mGustavo Junqueira Barbosa, [32m25 hours ago
+[34m2c4c1ad[31m [37mverify-token route — [36mGustavo Junqueira Barbosa, [32m25 hours ago
+[34m87bc6c2[31m [37mdelete user and ForbiddenError — [36mGustavo Junqueira Barbosa, [32m25 hours ago
+[34m71000ef[31m [37mlogin route and NotFoundError — [36mGustavo Junqueira Barbosa, [32m26 hours ago
+[34m9563e3f[31m [37mcreate user - signup — [36mGustavo Junqueira Barbosa, [32m3 days ago
+[34m36db36a[31m [37musers structure and getAllUsers — [36mGustavo Junqueira Barbosa, [32m3 days ago
+[34ma10eb80[31m [37mcreate database — [36mGustavo Junqueira Barbosa, [32m3 days ago
+[34m21a9614[31m [37mindex — [36mGustavo Junqueira Barbosa, [32m3 days ago
+[34me35c43c[31m [37mproject structure — [36mGustavo Junqueira Barbosa, [32m3 days ago
+[34m03db775[31m (origin/main, origin/HEAD, main) [37mInitial commit — [36mGitHub, [32m3 days ago

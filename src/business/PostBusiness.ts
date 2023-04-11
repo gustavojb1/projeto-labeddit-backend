@@ -1,13 +1,15 @@
-import { CreatePostInputDTO, GetPostByIdInputDTO, GetPostInputDTO, GetPostOutputDTO, PostDTO } from "../dtos/PostDTO";
+import { CreatePostInputDTO, EditPostVoteInputDTO, GetPostByIdInputDTO, GetPostInputDTO, GetPostOutputDTO, GetPostVoteInputDTO, PostDTO } from "../dtos/PostDTO";
 import { BadRequestError } from "../errors/BadRequestError";
 import { TokenManager } from "../services/TokenManager";
 import { PostDatabase } from "../database/PostDatabase";
 import { UserDatabase } from "../database/UserDatabase";
-import { CommentDB, UserDB } from "../types";
+import { CommentDB, PostVoteDB, UserDB } from "../types";
 import { CommentDatabase } from "../database/CommentDatabase";
 import { Post } from "../models/Post";
 import { IdGenerator } from "../services/IdGenerator";
 import { NotFoundError } from "../errors/NotFoundError";
+import { PostVotesDatabase } from "../database/PostVotesDatabase";
+import { PostVote } from "../models/PostVote";
 
 
 
@@ -19,6 +21,7 @@ export class PostBusiness {
     private postDTO: PostDTO,
     private tokenManager: TokenManager,
     private idGenerator: IdGenerator,
+    private postVotesDatabase: PostVotesDatabase
   ) { }
 
   public getCreator(userId: string, usersDB: UserDB[]) {
@@ -156,6 +159,127 @@ export class PostBusiness {
 
     const output = this.postDTO.getPostOutput(post);
 
+    return output;
+  }
+
+  public async getPostVotes(input: GetPostVoteInputDTO) {
+    const { token } = input;
+
+    const payload = this.tokenManager.getPayload(token);
+    if (payload === null) {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const postVotesDB = await this.postVotesDatabase.findPostVotes();
+
+    const output = postVotesDB.map(postVoteDB => {
+      const postVote = new PostVote(
+        postVoteDB.user_id,
+        postVoteDB.post_id,
+        postVoteDB.vote
+      );
+
+      return this.postDTO.getPostVoteOutput(postVote);
+    });
+
+    return output;
+  }
+
+  //UPDATE POST VOTE BY ID
+  public async updatePostVoteById(input: EditPostVoteInputDTO): Promise<string> {
+    const { id, token } = input;
+    const updatedVote = input.vote;
+
+    const payload = this.tokenManager.getPayload(token);
+    if (payload === null) {
+      throw new BadRequestError("Token inválido");
+    }
+
+    // usuário deu upvote/downvote - não o autor
+    const userId = payload.id;
+
+    const postDB = await this.postDatabase.findPostById(id);
+    if (!postDB) {
+      throw new NotFoundError("Não foi encontrado um post com esse 'id'");
+    }
+
+    const postId = postDB.id as string;
+    const postVoteDB = await this.postVotesDatabase.findVoteByUserAndPostId(userId, postId);
+
+    let deltaUpvotes = 0;
+    let deltaDownvotes = 0;
+
+    if (!postVoteDB) {
+      // Caso nao exista nem upvote nem downvote do user no post
+      const newPostVote = new PostVote(userId, postId);
+
+      newPostVote.setVote(updatedVote ? 1 : 0);
+      deltaUpvotes = updatedVote ? 1 : 0;
+      deltaDownvotes = updatedVote ? 0 : 1;
+
+      const newPostVoteDB: PostVoteDB = {
+        user_id: newPostVote.getUserId(),
+        post_id: newPostVote.getPostId(),
+        vote: newPostVote.getVote()
+      }
+
+      await this.postVotesDatabase.createVote(newPostVoteDB);
+    } else {
+      // Caso já exista um upvote ou downvote do user no post
+      const vote = postVoteDB.vote;
+
+      if ((updatedVote === Boolean(vote))) {
+        // Usuário dá upvote num post que já havia dado upvote
+        // ou dá downvote num post que já havia dado downvote
+        await this.postVotesDatabase.deleteVoteByUserAndPostId(userId, postId);
+
+        if (updatedVote) {
+          deltaUpvotes = -1;
+        } else {
+          deltaDownvotes = -1;
+        }
+
+      } else {
+        // Usuário dá upvote num post que já havia dado downvote
+        // ou dá downvote num post que já havia dado upvote
+        const updatedVote = Number(!vote);
+        const updatedPostVote = new PostVote(userId, postId, updatedVote);
+
+        const updatedPostVoteDB: PostVoteDB = {
+          user_id: updatedPostVote.getUserId(),
+          post_id: updatedPostVote.getPostId(),
+          vote: updatedPostVote.getVote()
+        }
+
+        await this.postVotesDatabase.updateVoteByUserAndPostId(
+          updatedPostVoteDB,
+          userId,
+          postId
+        );
+
+        deltaUpvotes = updatedVote ? 1 : -1;
+        deltaDownvotes = updatedVote ? -1 : 1;
+      }
+    }
+
+    const updatedPost = new Post(
+      postId,
+      postDB.content,
+      postDB.upvotes + deltaUpvotes,
+      postDB.downvotes + deltaDownvotes,
+      postDB.created_at,
+      postDB.updated_at,
+      {
+        id: postDB.creator_id,
+        username: ""
+      },
+      []
+    )
+
+    const updatedPostDB = updatedPost.toDBModel();
+    await this.postDatabase.updatePostById(updatedPostDB, postId);
+
+    const output = "Vote atualizado com sucesso";
     return output;
   }
 }

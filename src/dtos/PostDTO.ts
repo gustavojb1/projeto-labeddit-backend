@@ -1,5 +1,6 @@
 import { BadRequestError } from "../errors/BadRequestError"
 import { Post } from "../models/Post"
+import { PostVote } from "../models/PostVote"
 
 
 //INTERFACES
@@ -39,6 +40,23 @@ export interface GetPostByIdInputDTO {
   id: string
   token: string
 }
+
+export interface GetPostVoteInputDTO {
+  token: string
+}
+
+export interface GetPostVoteOutputDTO {
+  userId: string
+  postId: string
+  vote: number
+}
+
+export interface EditPostVoteInputDTO {
+  id: string
+  vote: boolean
+  token: string
+}
+
 
 // CLASSES
 export class PostDTO {
@@ -93,6 +111,45 @@ export class PostDTO {
 
     const result: GetPostByIdInputDTO = {
       id,
+      token
+    }
+
+    return result;
+  }
+
+  getPostVoteInput = (token: unknown): GetPostVoteInputDTO => {
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: GetPostVoteInputDTO = {
+      token
+    }
+
+    return result;
+  }
+
+  getPostVoteOutput = (postVote: PostVote): GetPostVoteOutputDTO => {
+    const result: GetPostVoteOutputDTO = {
+      userId: postVote.getUserId(),
+      postId: postVote.getPostId(),
+      vote: postVote.getVote()
+    }
+
+    return result;
+  }
+
+  editPostVoteInput = (id: string, vote: unknown, token: unknown): EditPostVoteInputDTO => {
+    if (typeof vote !== "boolean") {
+      throw new BadRequestError("'vote' deve ser um boolean");
+    }
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: EditPostVoteInputDTO = {
+      id,
+      vote,
       token
     }
 

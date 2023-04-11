@@ -22,4 +22,11 @@ export class PostDatabase extends BaseDatabase {
       .where({ id });
     return result;
   }
+
+  public async updatePostById(updatedPostDB : PostDB, id : string){
+    await BaseDatabase
+        .connection(PostDatabase.TABLE_POSTS)
+        .update(updatedPostDB)
+        .where({ id })
+}
 }

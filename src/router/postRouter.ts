@@ -7,6 +7,7 @@ import { CommentDatabase } from "../database/CommentDatabase";
 import { PostDTO } from "../dtos/PostDTO";
 import { TokenManager } from "../services/TokenManager";
 import { IdGenerator } from "../services/IdGenerator";
+import { PostVotesDatabase } from "../database/PostVotesDatabase";
 
 const postController = new PostController(
   new PostBusiness(
@@ -15,7 +16,8 @@ const postController = new PostController(
     new CommentDatabase(),
     new PostDTO(),
     new TokenManager(),
-    new IdGenerator()
+    new IdGenerator(),
+    new PostVotesDatabase()
   ),
   new PostDTO()
 );
@@ -23,6 +25,8 @@ const postController = new PostController(
 export const postRouter = express.Router();
 
 postRouter.get("/", postController.getPosts);
-postRouter.post("/", postController.createPost);
+postRouter.get("/votes", postController.getPostVotes);
 postRouter.get("/:id", postController.getPostById);
+postRouter.post("/", postController.createPost);
+postRouter.put("/:id/vote", postController.updatePostVoteById);
 
