@@ -94,4 +94,48 @@ export class CommentController {
       }
     }
   }
+
+  //UPDATE COMMENT BY ID
+  public updateCommentById = async (req: Request, res: Response) => {
+    try {
+      const id = req.params.id;
+      const content = req.body.content;
+      const token = req.headers.authorization;
+
+      const input = this.commentDTO.editCommentInput(token, content, id);
+      const output = await this.commentBusiness.updateCommentById(input);
+
+      res.status(200).send("Comentário atualizado com sucesso");
+    } catch (error) {
+      console.log(error)
+
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message)
+      } else {
+        res.status(500).send("Erro inesperado")
+      }
+    }
+  }
+
+  //UPDATE COMENT VOTE BY ID
+  public updateCommentVoteById = async (req: Request, res: Response) => {
+    try {
+      const id = req.params.id;
+      const vote = req.body.vote;
+      const token = req.headers.authorization;
+
+      const input = this.commentDTO.editCommentVoteInput(id, vote, token);
+      await this.commentBusiness.updateCommentVoteById(input);
+
+      res.status(200).send("Vote atualizado com sucesso");
+    } catch (error) {
+      console.log(error)
+
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message)
+      } else {
+        res.status(500).send("Erro inesperado")
+      }
+    }
+  }
 }

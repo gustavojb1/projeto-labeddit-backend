@@ -22,4 +22,11 @@ export class CommentDatabase extends BaseDatabase {
       .where({ id });
     return result;
   }
+
+  public async updateCommentById(updatedCommentDB: CommentDB, id: string) {
+    await BaseDatabase
+      .connection(CommentDatabase.TABLE_COMMENTS)
+      .update(updatedCommentDB)
+      .where({ id });
+  }
 }

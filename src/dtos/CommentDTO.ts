@@ -44,6 +44,18 @@ export interface GetCommentVoteOutputDTO {
   vote: number
 }
 
+export interface EditCommentInputDTO {
+  content: string
+  id: string
+  token: string
+}
+
+export interface EditCommentVoteInputDTO {
+  id: string
+  vote: boolean
+  token: string
+}
+
 //CLASSES
 export class CommentDTO {
   getCommentInput = (token: unknown): GetCommentInputDTO => {
@@ -126,6 +138,41 @@ export class CommentDTO {
       commentId: commentVote.getCommentId(),
       vote: commentVote.getVote()
     };
+
+    return result;
+  }
+
+  editCommentInput = (token: unknown, content: unknown, id: string): EditCommentInputDTO => {
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    if (typeof content !== "string") {
+      throw new BadRequestError("'content' deve ser string");
+    }
+
+    const result: EditCommentInputDTO = {
+      id,
+      token,
+      content
+    };
+
+    return result;
+  }
+
+  editCommentVoteInput = (id: string, vote: unknown, token: unknown): EditCommentVoteInputDTO => {
+    if (typeof vote !== "boolean") {
+      throw new BadRequestError("'vote' deve ser um boolean");
+    }
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: EditCommentVoteInputDTO = {
+      id,
+      vote,
+      token
+    }
 
     return result;
   }
