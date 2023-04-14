@@ -3,6 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { userRouter } from "./router/userRouter";
 import { postRouter } from "./router/postRouter";
+import { commentRouter } from "./router/commentRouter";
 
 // dotenv
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(express.json());
 // Rotas
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
+app.use("/comments", commentRouter);
 
 // Configuração da Porta
 app.listen(Number(process.env.PORT || 3003), () => {

@@ -9,4 +9,31 @@ export class CommentDatabase extends BaseDatabase {
       .connection(CommentDatabase.TABLE_COMMENTS);
     return result;
   }
+
+  public async createComment(newCommentDB: CommentDB) {
+    await BaseDatabase
+      .connection(CommentDatabase.TABLE_COMMENTS)
+      .insert(newCommentDB);
+  }
+
+  public async findCommentById(id: string) {
+    const [result]: CommentDB[] | undefined[] = await BaseDatabase
+      .connection(CommentDatabase.TABLE_COMMENTS)
+      .where({ id });
+    return result;
+  }
+
+  public async updateCommentById(updatedCommentDB: CommentDB, id: string) {
+    await BaseDatabase
+      .connection(CommentDatabase.TABLE_COMMENTS)
+      .update(updatedCommentDB)
+      .where({ id });
+  }
+
+  public async deleteCommentById(id: string) {
+    await BaseDatabase
+      .connection(CommentDatabase.TABLE_COMMENTS)
+      .del()
+      .where({ id });
+  }
 }
