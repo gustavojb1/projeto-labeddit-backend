@@ -22,6 +22,12 @@ export interface GetCommentOutputDTO {
   postId: string
 }
 
+export interface CreateCommentInputDTO {
+  content: string,
+  token: string,
+  postId: string
+}
+
 //CLASSES
 export class CommentDTO {
   getCommentInput = (token: unknown): GetCommentInputDTO => {
@@ -46,6 +52,28 @@ export class CommentDTO {
       updatedAt: comment.getUpdatedAt(),
       creator: comment.getCreator(),
       postId: comment.getPostId()
+    }
+
+    return result;
+  }
+
+  createCommentInput = (content: unknown, token: unknown, postId: unknown): CreateCommentInputDTO => {
+    if (typeof content !== "string") {
+      throw new BadRequestError("'content' deve ser uma string");
+    }
+
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    if (typeof postId !== "string") {
+      throw new BadRequestError("'postId' deve ser uma string");
+    }
+
+    const result: CreateCommentInputDTO = {
+      content,
+      token,
+      postId
     }
 
     return result;
