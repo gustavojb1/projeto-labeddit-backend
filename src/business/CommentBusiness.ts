@@ -1,5 +1,5 @@
 // import { CommentDTO, CreateCommentInputDTO, DeleteCommentInputDTO, EditCommentInputDTO, EditCommentVoteInputDTO, GetCommentByIdInputDTO, GetCommentInputDTO, GetCommentOutputDTO, GetCommentVoteInputDTO } from "../dtos/CommentDTO";
-import { CommentDTO, GetCommentInputDTO, GetCommentOutputDTO, CreateCommentInputDTO, GetCommentByIdInputDTO } from "../dtos/CommentDTO";
+import { CommentDTO, GetCommentInputDTO, GetCommentOutputDTO, CreateCommentInputDTO, GetCommentByIdInputDTO, GetCommentVoteInputDTO } from "../dtos/CommentDTO";
 import { BadRequestError } from "../errors/BadRequestError";
 import { CommentDatabase } from "../database/CommentDatabase";
 import { UserDatabase } from "../database/UserDatabase";
@@ -9,6 +9,10 @@ import { Comment } from "../models/Comment";
 import { NotFoundError } from "../errors/NotFoundError";
 import { PostDatabase } from "../database/PostDatabase";
 import { IdGenerator } from "../services/IdGenerator";
+import { CommentVotesDatabase } from "../database/CommentVotesDatabase";
+import { CommentVote } from "../models/CommentVote";
+
+
 
 
 export class CommentBusiness {
@@ -19,6 +23,7 @@ export class CommentBusiness {
     private tokenManager: TokenManager,
     private idGenerator: IdGenerator,
     private postDatabase: PostDatabase,
+    private commentVotesDatabase: CommentVotesDatabase,
   ) { }
 
   public async getComments(input: GetCommentInputDTO): Promise<GetCommentOutputDTO[]> {
@@ -129,6 +134,29 @@ export class CommentBusiness {
     )
 
     const output = this.commentDTO.getCommentOutput(comment);
+
+    return output;
+  }
+
+  public async getCommentVotes(input: GetCommentVoteInputDTO) {
+    const { token } = input;
+
+    const payload = this.tokenManager.getPayload(token);
+    if (payload === null) {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const commentVotesDB = await this.commentVotesDatabase.findCommentVotes();
+
+    const output = commentVotesDB.map(commentVoteDB => {
+      const commentVote = new CommentVote(
+        commentVoteDB.comment_id,
+        commentVoteDB.user_id,
+        commentVoteDB.vote
+      );
+
+      return this.commentDTO.getCommentVoteOutput(commentVote);
+    });
 
     return output;
   }
