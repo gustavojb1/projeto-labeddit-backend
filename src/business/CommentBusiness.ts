@@ -1,5 +1,5 @@
 // import { CommentDTO, CreateCommentInputDTO, DeleteCommentInputDTO, EditCommentInputDTO, EditCommentVoteInputDTO, GetCommentByIdInputDTO, GetCommentInputDTO, GetCommentOutputDTO, GetCommentVoteInputDTO } from "../dtos/CommentDTO";
-import { CommentDTO, GetCommentInputDTO, GetCommentOutputDTO, CreateCommentInputDTO } from "../dtos/CommentDTO";
+import { CommentDTO, GetCommentInputDTO, GetCommentOutputDTO, CreateCommentInputDTO, GetCommentByIdInputDTO } from "../dtos/CommentDTO";
 import { BadRequestError } from "../errors/BadRequestError";
 import { CommentDatabase } from "../database/CommentDatabase";
 import { UserDatabase } from "../database/UserDatabase";
@@ -98,6 +98,38 @@ export class CommentBusiness {
     await this.commentDatabase.createComment(newCommentDB);
 
     const output = "Comment criado com sucesso";
+    return output;
+  }
+
+  public async getCommentById(input: GetCommentByIdInputDTO): Promise<GetCommentOutputDTO> {
+    const { id, token } = input;
+
+    const payload = this.tokenManager.getPayload(token);
+    if (payload === null) {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const commentDB = await this.commentDatabase.findCommentById(id);
+    if (!commentDB) {
+      throw new NotFoundError("Não foi encontrado um comment com esse 'id'");
+    }
+
+    const comment = new Comment(
+      commentDB.id,
+      commentDB.content,
+      commentDB.upvotes,
+      commentDB.downvotes,
+      commentDB.created_at,
+      commentDB.updated_at,
+      {
+        id: payload.id,
+        username: payload.username
+      },
+      commentDB.post_id
+    )
+
+    const output = this.commentDTO.getCommentOutput(comment);
+
     return output;
   }
 }

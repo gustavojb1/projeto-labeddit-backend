@@ -53,4 +53,25 @@ export class CommentController {
       }
     }
   }
+
+  //GET COMMENT BY ID
+  public getCommentById = async (req: Request, res: Response) => {
+    try {
+      const token = req.headers.authorization;
+      const id = req.params.id;
+
+      const input = this.commentDTO.getCommentByIdInput(token, id);
+      const output = await this.commentBusiness.getCommentById(input);
+
+      res.status(200).send(output);
+    } catch (error) {
+      console.log(error)
+
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message)
+      } else {
+        res.status(500).send("Erro inesperado")
+      }
+    }
+  }
 }

@@ -25,4 +25,5 @@ const commentController = new CommentController(
 export const commentRouter = express.Router();
 
 commentRouter.get("/", commentController.getComments);
+commentRouter.get("/:id", commentController.getCommentById);
 commentRouter.post("/", commentController.createComment);

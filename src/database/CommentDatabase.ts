@@ -15,4 +15,11 @@ export class CommentDatabase extends BaseDatabase {
       .connection(CommentDatabase.TABLE_COMMENTS)
       .insert(newCommentDB);
   }
+
+  public async findCommentById(id: string) {
+    const [result]: CommentDB[] | undefined[] = await BaseDatabase
+      .connection(CommentDatabase.TABLE_COMMENTS)
+      .where({ id });
+    return result;
+  }
 }

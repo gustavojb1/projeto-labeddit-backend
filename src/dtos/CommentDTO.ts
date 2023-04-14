@@ -28,6 +28,11 @@ export interface CreateCommentInputDTO {
   postId: string
 }
 
+export interface GetCommentByIdInputDTO {
+  token: string
+  id: string
+}
+
 //CLASSES
 export class CommentDTO {
   getCommentInput = (token: unknown): GetCommentInputDTO => {
@@ -74,6 +79,19 @@ export class CommentDTO {
       content,
       token,
       postId
+    }
+
+    return result;
+  }
+
+  getCommentByIdInput = (token: unknown, id: string): GetCommentByIdInputDTO => {
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: GetCommentByIdInputDTO = {
+      id,
+      token
     }
 
     return result;
