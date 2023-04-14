@@ -32,3 +32,4 @@ commentRouter.get("/:id", commentController.getCommentById);
 commentRouter.post("/", commentController.createComment);
 commentRouter.put("/:id", commentController.updateCommentById);
 commentRouter.put("/:id/vote", commentController.updateCommentVoteById);
+commentRouter.delete("/:id", commentController.deleteCommentById);

@@ -56,6 +56,11 @@ export interface EditCommentVoteInputDTO {
   token: string
 }
 
+export interface DeleteCommentInputDTO {
+  token: string
+  id: string
+}
+
 //CLASSES
 export class CommentDTO {
   getCommentInput = (token: unknown): GetCommentInputDTO => {
@@ -171,6 +176,19 @@ export class CommentDTO {
     const result: EditCommentVoteInputDTO = {
       id,
       vote,
+      token
+    }
+
+    return result;
+  }
+
+  deleteCommentInput = (token: unknown, id: string): DeleteCommentInputDTO => {
+    if (typeof token !== "string") {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const result: DeleteCommentInputDTO = {
+      id,
       token
     }
 

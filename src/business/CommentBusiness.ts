@@ -1,5 +1,5 @@
 // import { CommentDTO, CreateCommentInputDTO, DeleteCommentInputDTO, EditCommentInputDTO, EditCommentVoteInputDTO, GetCommentByIdInputDTO, GetCommentInputDTO, GetCommentOutputDTO, GetCommentVoteInputDTO } from "../dtos/CommentDTO";
-import { CommentDTO, GetCommentInputDTO, GetCommentOutputDTO, CreateCommentInputDTO, GetCommentByIdInputDTO, GetCommentVoteInputDTO, EditCommentInputDTO, EditCommentVoteInputDTO } from "../dtos/CommentDTO";
+import { CommentDTO, GetCommentInputDTO, GetCommentOutputDTO, CreateCommentInputDTO, GetCommentByIdInputDTO, GetCommentVoteInputDTO, EditCommentInputDTO, EditCommentVoteInputDTO, DeleteCommentInputDTO } from "../dtos/CommentDTO";
 import { BadRequestError } from "../errors/BadRequestError";
 import { CommentDatabase } from "../database/CommentDatabase";
 import { UserDatabase } from "../database/UserDatabase";
@@ -304,6 +304,30 @@ export class CommentBusiness {
     await this.commentDatabase.updateCommentById(updatedCommentDB, commentId);
 
     const output = "Vote do comment atualizado com sucesso";
+    return output;
+  }
+
+  public async deleteCommentById(input: DeleteCommentInputDTO): Promise<string> {
+    const { id, token } = input;
+
+    const payload = this.tokenManager.getPayload(token);
+    if (payload === null) {
+      throw new BadRequestError("Token inválido");
+    }
+
+    const commentDB = await this.commentDatabase.findCommentById(id);
+    if (!commentDB) {
+      throw new NotFoundError("Não existe um comment com esse id");
+    }
+
+    if (payload.role !== USER_ROLES.ADMIN) {
+      throw new ForbidenError("Você não tem permissão para realizar essa ação");
+    }
+
+    await this.commentDatabase.deleteCommentById(id);
+
+    const output = "Comment deletado com sucesso";
+
     return output;
   }
 }

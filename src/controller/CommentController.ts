@@ -138,4 +138,25 @@ export class CommentController {
       }
     }
   }
+
+  //DELETE VOTE BY ID
+  public deleteCommentById = async (req: Request, res: Response) => {
+    try {
+      const id = req.params.id;
+      const token = req.headers.authorization;
+
+      const input = this.commentDTO.deleteCommentInput(token, id);
+      await this.commentBusiness.deleteCommentById(input);
+
+      res.status(200).send("Comentário deletado com sucesso");
+    } catch (error) {
+      console.log(error)
+
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message)
+      } else {
+        res.status(500).send("Erro inesperado")
+      }
+    }
+  }
 }
