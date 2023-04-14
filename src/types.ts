@@ -37,7 +37,7 @@ export enum USER_ROLES {
 
 export interface TokenPayload {
   id: string,
-username: string,
+  username: string,
   role: USER_ROLES
 }
 
