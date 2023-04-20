@@ -268,7 +268,7 @@ export class CommentBusiness {
         // Usuário dá upvote num comment que já havia dado downvote
         // ou dá downvote num comment que já havia dado upvote
         const updatedVote = Number(!vote);
-        const updatedCommentVote = new CommentVote(userId, commentId, updatedVote);
+        const updatedCommentVote = new CommentVote(commentId, userId, updatedVote);
 
         const updatedCommentVoteDB: CommentVoteDB = {
           user_id: updatedCommentVote.getUserId(),
