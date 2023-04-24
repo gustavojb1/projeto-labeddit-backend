@@ -54,4 +54,9 @@ SELECT * from users;
 
 select * from posts;
 
+
+select * from comments;
+
 select * from post_votes;
+
+select * from comment_votes;
