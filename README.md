@@ -35,6 +35,13 @@ O repositório que contém o Front-End dessa aplicação é o [labeddit-front](h
 
 <p align="right">(<a href="#readme-top">voltar para o topo</a>)</p>
 
+<!-- Documentação no Postman -->
+## Documentação no Postman
+
+Basta seguir o link:
+
+- [Documentação no Postman](https://documenter.getpostman.com/view/24460838/2s93kxbkvB)
+
 <!-- EXEMPLOS DE REQUISIÇÕES -->
 ## Exemplos de Requisições
 
@@ -546,14 +553,6 @@ Com isso, obteve-se a seguinte cobertura para essa aplicação:
 
 <p align="right">(<a href="#readme-top">voltar para o topo</a>)</p>
 
-<!-- Documentação no Postman -->
-## Documentação no Postman
-
-Basta seguir o link:
-
-- [Documentação no Postman](https://documenter.getpostman.com/view/24460838/2s93kxbkvB)
-
-<p align="right">(<a href="#readme-top">voltar para o topo</a>)</p>
  
  <!-- CONTATO -->
  ## Contato
