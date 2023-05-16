@@ -573,6 +573,6 @@ Basta seguir o link:
 [sqlite-shield]: https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white
 [sqlite-url]: https://sqlite.org/
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
-[linkedin-url]: https://www.linkedin.com/in/vitor-fontenele/
+[linkedin-url]: https://www.linkedin.com/in/gustavo-barbosa-b2668023a/
 [github-shield]: https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white
-[github-url]: https://github.com/vitorfontenele
+[github-url]: https://github.com/gustavojb1
